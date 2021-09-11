@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersTableSeeder::class);
         $this->call(HumberSeeder::class);
 
-        \App\Models\Beneficiary::factory(2)->create();
+        \App\Models\Beneficiary::factory(100)->create();
 
         Model::reguard();
     }

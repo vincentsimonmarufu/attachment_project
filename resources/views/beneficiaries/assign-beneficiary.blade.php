@@ -16,7 +16,7 @@
         <div class="col-lg-8">
             <div class="page-header-title">
                 <div class="d-inline">
-                    <h5>Users</h5>
+                    <h5>Beneficiaries</h5>
                     <span class="pcoded-mtext"> Assign Beneficiary</span>
                 </div>
             </div>
@@ -30,10 +30,10 @@
                         ></a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="{{ url('users') }}">Users</a>
+                        <a href="{{ url('beneficiaries') }}">Beneficiaries</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="{{ url('users/create') }}">Add New</a>
+                        <a href="{{ url('beneficiaries/create') }}">Add New</a>
                     </li>
                 </ul>
             </div>
@@ -49,12 +49,12 @@
                     <div class="col-sm-12">
                       <div class="card">
                         <div class="card-header pb-0">
-                            <h4 style="font-size: 18px">Terminate Employee Contract</h4>
-                            <p>Please select employee pay number first for the temination process</p>
+                            <h4 style="font-size: 18px">Assign Beneficiary to Employee</h4>
+                            <p>Please select employee pay number and Beneficiary name</p>
                         </div>
                         <div class="card-block mt-0 pt-0">
                             <h4 class="sub-title"></h4>
-                            <form method="POST" action="{{ url('terminate-post') }}" class="needs-validation">
+                            <form method="POST" action="" class="needs-validation">
                                 @csrf
                                 @method('POST')
 
@@ -80,15 +80,15 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="department" class="col-sm-3 col-form-label"
-                                        >Department Name : </label
+                                    <label for="beneficiary" class="col-sm-3 col-form-label"
+                                        >Beneficiary Name : </label
                                     >
                                     <div class="col-sm-9">
-                                        <select name="department" id="department" class="form-control" style="width: 100%;" required="">
-                                            <option value="">Please select department manager</option>
+                                        <select name="beneficiary" id="beneficiary" class="form-control" style="width: 100%;" required="">
+                                            <option value="">Please select beneficiary</option>
                                         </select>
                                     </div>
-                                    @error('department')
+                                    @error('beneficiary')
                                         <span class="invalid-feedback" role="alert">
                                             <strong> {{ $message }}</strong>
                                         </span>
@@ -96,14 +96,13 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="reason" class="col-sm-3 col-form-label"
-                                        >Reason for Termination : </label
+                                    <label for="id_number" class="col-sm-3 col-form-label"
+                                        >ID Number : </label
                                     >
                                     <div class="col-sm-9">
-                                        <textarea class="form-control" name="reason" id="reason" rows="5"></textarea>
+                                        <input type="text" name="id_number" id="id_number" class="form-control">
                                     </div>
-
-                                    @error('reason')
+                                    @error('id_number')
                                         <span class="invalid-feedback" role="alert">
                                             <strong> {{ $message }}</strong>
                                         </span>
@@ -129,21 +128,21 @@
 @section('footer_scripts')
 <script src="{{ asset('select2/js/select2.min.js') }}"></script>
 <script type="text/javascript">
-    $('#paynumber').select2({
-        placeholder:'select employee pay number'
+    $('#beneficiary').select2({
+        placeholder:'select benefiary name'
     }).change(function(){
-        var paynumber = $(this).val();
+        var beneficiary = $(this).val();
         var _token = $("input[name='_token']").val();
         if(paynumber){
             $.ajax({
                 type:"get",
-                url:"http://192.168.1.242:8080/foodhumbers/get-user-department/"+paynumber,
+                url:"/get-beneficiary-id/"+beneficiary,
                 _token: _token ,
                 success:function(res) {
                     if(res) {
-                        $("#department").empty();
+                        $("#id_number").empty();
                         $.each(res,function(key, value){
-                            $("#department").append('<option value="'+key+'">'+value+'</option>');
+                            $("#id_number").value();
                         });
                     }
                 }
@@ -156,7 +155,7 @@
 
 <script>
     $(document).ready(function() {
-        $('#department').select2({
+        $('#paynumber').select2({
             placeholder:'Please select department',
         });
     });

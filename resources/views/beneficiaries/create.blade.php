@@ -28,7 +28,7 @@ Add new Beneficiary
                         <a href="index.html"><i class="feather icon-home"></i></a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="{{ url('benefits') }}">Beneficiaries</a>
+                        <a href="{{ url('beneficiaries') }}">Beneficiaries</a>
                     </li>
                     <li class="breadcrumb-item">
                         <a href="{{ url('beneficiaries/create') }}">Add New</a>
@@ -52,28 +52,8 @@ Add new Beneficiary
                             <div class="card-block mt-0 pt-0">
                                 <h4 class="sub-title"></h4>
                                 <form method="POST" action="{{ route('beneficiaries.store') }}">
+
                                     @csrf
-                                    <div class="form-group row">
-                                        <label for="user_id" class="col-sm-3 col-form-label">Employee Name :
-                                        </label>
-                                        <div class="col-sm-9">
-                                            <select name="user_id" id="user_id" class="form-control"
-                                                style="width: 100%;">
-                                                <option value="">Please select employee name</option>
-                                                @if ($users)
-                                                @foreach ($users as $user)
-                                                <option value="{{ $user->id }}">{{ $user->paynumber }} -
-                                                    {{ $user->first_name }} {{ $user->last_name }}</option>
-                                                @endforeach
-                                                @endif
-                                            </select>
-                                        </div>
-                                        @error('user_id')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong> {{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
 
                                     <div class="form-group row">
                                         <label for="first_name" class="col-sm-3 col-form-label">First Name : </label>

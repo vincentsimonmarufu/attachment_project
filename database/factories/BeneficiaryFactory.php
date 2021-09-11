@@ -24,12 +24,10 @@ class BeneficiaryFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::all()->random()->id,
             'first_name' => $this->faker->name,
             'last_name' => $this->faker->name,
             'mobile_number' => $this->faker->numberBetween(700000000,782877933),
-            'id_number' => Str::random(9),
-            'pin' => User::all()->random()->pin
+            'id_number' => $this->faker->numberBetween(7000000,7828779).'-'.Str::random(2),
         ];
     }
 }

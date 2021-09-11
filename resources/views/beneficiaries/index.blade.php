@@ -58,7 +58,6 @@
                               <thead>
                                 <tr>
                                   <th>Id</th>
-                                  <th>Employee Paynumber</th>
                                   <th>Full Name</th>
                                   <th>ID Number</th>
                                   <th>Mobile Number</th>
@@ -70,7 +69,6 @@
                                     @foreach ($beneficiaries as $beneficiary )
                                         <tr>
                                             <td>{{ $beneficiary->id }}</td>
-                                            <td>{{ $beneficiary->user->paynumber }}</td>
                                             <td>{{ $beneficiary->first_name }}</td>
                                             <td>{{ $beneficiary->id_number }}</td>
                                             <td>{{ $beneficiary->mobile_number }}</td>

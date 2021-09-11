@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBeneficiariesTable extends Migration
+class CreateBeneficiaryPasswordsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateBeneficiariesTable extends Migration
      */
     public function up()
     {
-        Schema::create('beneficiaries', function (Blueprint $table) {
+        Schema::create('beneficiary_passwords', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name')->nullable();
-            $table->string('last_name')->nullable();
-            $table->string('id_number')->unique();
-            $table->integer('mobile_number')->nullable();
-            $table->softDeletes();
+            $table->string('id_number');
+            $table->string('paynumber');
+            $table->integer('pin');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateBeneficiariesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('beneficiaries');
+        Schema::dropIfExists('beneficiary_passwords');
     }
 }

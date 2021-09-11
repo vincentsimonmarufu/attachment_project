@@ -23,14 +23,15 @@ class Beneficiary extends Model
         'pin'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function getFullNameAttribute()
     {
         return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class,'beneficiary_user','beneficiary_id','user_id');
     }
 
 }

@@ -104,6 +104,7 @@ Route::group(['middleware' => ['auth', 'activated','web', 'activity','manageradm
 
     // assign beneficiaries
     Route::get('assign-beneficiary','App\Http\Controllers\BeneficiariesController@assignBeneficiary');
+    Route::get('get-beneficiary-id','App\Http\Controllers\BeneficiariesController@getIdNumber');
 
 });
 

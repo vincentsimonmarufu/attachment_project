@@ -40,7 +40,6 @@ class BeneficiariesController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'user_id' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'mobile_number' => 'required',
@@ -58,28 +57,18 @@ class BeneficiariesController extends Controller
 
                 if (!$beneficiary_exist)
                 {
-                    $user = User::where('id',$request->user_id)->first();
-                    $beneficiaries = $user->beneficiaries->count();
-
-                    if ( $beneficiaries <= 3 )
-                    {
                         // create or add beneficiaries
                         $beneficiary = new Beneficiary();
-                        $beneficiary->user_id = $request->user_id;
                         $beneficiary->first_name = $request->first_name;
                         $beneficiary->last_name = $request->last_name;
                         $beneficiary->mobile_number = $request->mobile_number;
                         $beneficiary->id_number = $request->id_number;
-                        $beneficiary->pin = $user->pin;
                         $beneficiary->save();
 
-                        return redirect('beneficiaries')->with('success','New beneficiary has been added successfully');
+                    return redirect('beneficiaries')->with('success','New beneficiary has been added successfully');
 
-                    } else {
-
-                        return back()->with('error','Maximum number of beneficiaries has been reached.');
-                    }
                 } else {
+
                     return back()->with("error","Please not that the beneficary account already exist.. Proceed to asign beneficiary to another user.");
                 }
 
@@ -143,5 +132,10 @@ class BeneficiariesController extends Controller
         $users = User::all();
         $beneficiaries = Beneficiary::latest()->get();
         return view('beneficiaries.assign-beneficiary',compact('users','beneficiaries'));
+    }
+
+    public function getIdNumber()
+    {
+        
     }
 }

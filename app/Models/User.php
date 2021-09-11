@@ -69,11 +69,6 @@ class User extends Authenticatable
         return $this->belongsTo(Usertype::class,'usertype_id','id');
     }
 
-    public function beneficiaries()
-    {
-        return $this->hasMany(Beneficiary::class);
-    }
-
     public function allocations()
     {
         return $this->hasMany(Allocation::class,'paynumber','paynumber');
@@ -97,6 +92,11 @@ class User extends Authenticatable
     public function meat_collections()
     {
         return $this->hasMany(MeatCollection::class,'paynumber','paynumber');
+    }
+
+    public function beneficiaries()
+    {
+        return $this->belongsToMany(Beneficiary::class,'beneficiary_user','user_id','beneficiary_id');
     }
 
 }
