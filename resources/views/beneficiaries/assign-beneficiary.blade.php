@@ -54,7 +54,7 @@
                         </div>
                         <div class="card-block mt-0 pt-0">
                             <h4 class="sub-title"></h4>
-                            <form method="POST" action="" class="needs-validation">
+                            <form method="POST" action="{{ url('assign-beneficiary-post') }}" class="needs-validation">
                                 @csrf
                                 @method('POST')
 
@@ -67,7 +67,7 @@
                                             <option value="">Please select employee pay number</option>
                                             @if ($users)
                                                 @foreach ($users as $user)
-                                                    <option value="{{ $user->paynumber }}">( {{ $user->paynumber }} ) {{ $user->first_name }} {{ $user->last_name }}</option>
+                                                    <option value="{{ $user->id }}">( {{ $user->paynumber }} ) {{ $user->first_name }} {{ $user->last_name }}</option>
                                                 @endforeach
                                             @endif
                                         </select>
@@ -86,6 +86,11 @@
                                     <div class="col-sm-9">
                                         <select name="beneficiary" id="beneficiary" class="form-control" style="width: 100%;" required="">
                                             <option value="">Please select beneficiary</option>
+                                            @if ($beneficiaries)
+                                                @foreach ($beneficiaries as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->full_name }}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
                                     @error('beneficiary')
@@ -110,7 +115,7 @@
                                 </div>
 
                                 <div class="form-group row justify-content-end">
-                                    <button class="btn waves-effect btn-round waves-light btn-sm mr-4 btn-primary">Process Termination</button>
+                                    <button class="btn waves-effect btn-round waves-light btn-sm mr-4 btn-primary">Assign Beneficiary</button>
                                 </div>
                             </form>
                         </div>
@@ -133,7 +138,7 @@
     }).change(function(){
         var beneficiary = $(this).val();
         var _token = $("input[name='_token']").val();
-        if(paynumber){
+        if(beneficiary){
             $.ajax({
                 type:"get",
                 url:"/get-beneficiary-id/"+beneficiary,
@@ -142,7 +147,7 @@
                     if(res) {
                         $("#id_number").empty();
                         $.each(res,function(key, value){
-                            $("#id_number").value();
+                            $("#id_number").val(value);
                         });
                     }
                 }

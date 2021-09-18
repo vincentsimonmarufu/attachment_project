@@ -17,7 +17,7 @@ class CreateBeneficiaryPasswordsTable extends Migration
             $table->id();
             $table->string('id_number');
             $table->string('paynumber');
-            $table->integer('pin');
+            $table->string('pin');
             $table->timestamps();
         });
     }

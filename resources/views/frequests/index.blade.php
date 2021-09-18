@@ -45,7 +45,9 @@
                     <div class="col-sm-12">
                       <div class="card">
                         <div class="card-header" style="margin-bottom: 0;padding-bottom:0;">
-                            <h4 style="font-size:16px;margin-bottom:0;">Showing all humbers distributed</h4>
+                            <h4 style="font-size:16px;margin-bottom:0;">Showing all humbers distributed
+                                <span class="float-right mr-2"><a href="{{ url('delete_unattended_requests') }}" class="btn btn-danger btn-sm btn-round"><i class="fa fa-trash-o"></i>Delete Requests</a></span>
+                            </h4>
                         </div>
                         <div class="card-block">
                           <div class="dt-responsive table-responsive">

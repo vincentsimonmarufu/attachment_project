@@ -34,6 +34,10 @@
             visibility: visible;
         }
 
+        #hidden_div {
+            display: none;
+        }
+
     </style>
 @endsection
 
@@ -152,23 +156,7 @@
                                                     </span>
                                                 @enderror
                                             </div>
-                                            <div class="col-lg-6">
-                                                <label for="issue_date">Select Collection *</label> <br>
-                                                <div class="form-check form-check-inline col-lg-3">
-                                                    <input class="form-check-input" type="radio" name="iscollector" id="inlineRadio1" value="self" checked>
-                                                    <label class="form-check-label" for="inlineRadio1">Self</label>
-                                                </div>
-                                                <div class="form-check form-check-inline col-lg-3">
-                                                    <input class="form-check-input" type="radio" name="iscollector" id="inlineRadio2" value="other">
-                                                    <label class="form-check-label" for="inlineRadio2">Other</label>
-                                                </div>
 
-                                                @error('iscollector')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong> {{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
                                         </div>
 
                                         <div class="row mb-4 mb-4">
@@ -182,12 +170,48 @@
                                                     </span>
                                                 @enderror
                                             </div>
+                                        </div>
 
+                                        <div class="row mb-4 mb-4">
+                                            <div class="col-lg-12">
+                                                <label for="mtype">Meat Type *</label>
+                                                <input type="text" name="mtype" id="mtype" class="form-control" placeholder="Meat Type">
+
+                                                @error('mtype')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong> {{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
                                         </div>
 
 
-                                        <div class="row select-display beneficiary-visible">
-                                            <div class="col-lg-12">
+                                    </fieldset>
+
+                                    <h3>Authentication</h3>
+                                    <fieldset>
+                                        <div class="row">
+
+                                            <div class="col-lg-6">
+                                                <label for="issue_date">Select Collection *</label> <br>
+                                                <div class="form-check form-check-inline col-lg-3">
+                                                    <input class="form-check-input" type="radio" name="iscollector" id="inlineRadio1" value="self" checked>
+                                                    <label class="form-check-label" for="inlineRadio1">Self</label>
+                                                </div>
+                                                <div class="form-check form-check-inline col-lg-3">
+                                                    <input class="form-check-input" type="radio" onchange="showDiv('hidden_div',this)" name="iscollector" id="inlineRadio2" value="other">
+                                                    <label class="form-check-label" for="inlineRadio2">Other</label>
+                                                </div>
+
+                                                @error('iscollector')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong> {{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                            <div id="hidden_div">
+                                                <div class="col-lg-12">
                                                 <fieldset class="scheduler-border">
                                                     <legend class="scheduler-border">Beneficiary Details</legend>
                                                     <div class="control-group">
@@ -208,17 +232,11 @@
                                                     </div>
                                                 </fieldset>
                                             </div>
-                                        </div>
-                                    </fieldset>
+                                            </div>
 
-                                    <h3>Authentication</h3>
-                                    <fieldset>
-                                        <div class="row">
-
-                                            <p class="ml-3 d-block"><strong style="font-weight: bold; font-size:18px;">Note : </strong> Please enter authoriser verification pin to proceed further into the application</p>
                                             <div class="col-lg-12">
+                                                <p class="ml-3 d-block"><strong style="font-weight: bold; font-size:18px;">Note : </strong> Please enter authoriser verification pin to proceed further into the application</p>
                                                 <div>
-
                                                     <label for="pin">Enter Verification Pin</label>
                                                     <input type="password" name="pin" id="pin" class="form-control" placeholder="1234">
                                                 </div>
@@ -301,6 +319,25 @@
 
                     $.ajax({
                         type:"get",
+                        url:"/getmeattype/"+id,
+                        _token: _token ,
+                        success:function(res)
+                        {
+                            if(res)
+                            {
+                                $("#mtype").empty();
+                                $.each(res,function(key, value){
+
+                                    $("#mtype").val(" 1. "+key+" 2. "+value);
+                                });
+
+                            }
+                        }
+
+                    });
+
+                    $.ajax({
+                        type:"get",
                         url:"/get-request-type/"+id,
                         _token: _token ,
                         success:function(res)
@@ -354,6 +391,15 @@
             placeholder: 'Please select employee beneficiary',
         });
     });
+</script>
+
+<script>
+
+    function showDiv(divId, element)
+    {
+        document.getElementById(divId).style.display = element.value == 'other' ? 'block' : 'none';
+    }
+
 </script>
 
 

@@ -34,6 +34,10 @@
             visibility: visible;
         }
 
+        #hidden_div {
+            display: none;
+        }
+
     </style>
 @endsection
 
@@ -153,26 +157,6 @@
                                                 @enderror
                                             </div>
                                             <div class="col-lg-6">
-                                                <label for="issue_date">Select Collection *</label> <br>
-                                                <div class="form-check form-check-inline col-lg-3">
-                                                    <input class="form-check-input" type="radio" name="iscollector" id="inlineRadio1" value="self" checked>
-                                                    <label class="form-check-label" for="inlineRadio1">Self</label>
-                                                </div>
-                                                <div class="form-check form-check-inline col-lg-3">
-                                                    <input class="form-check-input" type="radio" name="iscollector" id="inlineRadio2" value="other">
-                                                    <label class="form-check-label" for="inlineRadio2">Other</label>
-                                                </div>
-
-                                                @error('iscollector')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong> {{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-4 mb-2">
-                                            <div class="col-lg-12">
                                                 <label for="type">Request Type *</label>
                                                 <input type="text" name="type" id="type" class="form-control" placeholder="Food Humber">
 
@@ -182,31 +166,54 @@
                                                     </span>
                                                 @enderror
                                             </div>
+                                        </div>
+
+                                        <div class="row mb-4 mb-2">
+                                            <div class="col-lg-12" >
+
+                                                <label for="issue_date">Select Collection *</label> <br>
+                                                <div class="form-check form-check-inline col-lg-3">
+                                                    <input class="form-check-input" type="radio" name="iscollector" id="inlineRadio1" value="self" checked>
+                                                    <label class="form-check-label" for="inlineRadio1">Self</label>
+                                                </div>
+                                                <div class="form-check form-check-inline col-lg-3">
+                                                    <input class="form-check-input" onchange="showDiv('hidden_div',this)" type="radio" name="iscollector" id="inlineRadio2" value="other">
+                                                    <label class="form-check-label" for="inlineRadio2">Other</label>
+                                                </div>
+
+                                                @error('iscollector')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong> {{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
 
                                         </div>
 
-                                        <div class="row select-display beneficiary-visible">
-                                            <div class="col-lg-12">
-                                                <fieldset class="scheduler-border">
-                                                    <legend class="scheduler-border">Beneficiary Details</legend>
-                                                    <div class="control-group">
-                                                        <div class="row">
-                                                            <div class="col-lg-12">
-                                                                <label for="collected_by">ID Number and Full Name</label>
-                                                                <select name="collected_by" id="collected_by" class="form-control" style="width: 100%;">
-                                                                    <option value="">Please select employee beneficiary</option>
-                                                                </select>
+                                        <div id="hidden_div">
+                                            <div class="row select-display beneficiary-visible">
+                                                <div class="col-lg-12">
+                                                    <fieldset class="scheduler-border">
+                                                        <legend class="scheduler-border">Beneficiary Details</legend>
+                                                        <div class="control-group">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <label for="collected_by">ID Number and Full Name</label>
+                                                                    <select name="collected_by" id="collected_by" class="form-control" style="width: 100%;">
+                                                                        <option value="">Please select employee beneficiary</option>
+                                                                    </select>
 
-                                                                @error('collected_by')
-                                                                    <span class="invalid-feedback" role="alert">
-                                                                        <strong> {{ $message }}</strong>
-                                                                    </span>
-                                                                @enderror
+                                                                    @error('collected_by')
+                                                                        <span class="invalid-feedback" role="alert">
+                                                                            <strong> {{ $message }}</strong>
+                                                                        </span>
+                                                                    @enderror
+                                                                </div>
+
                                                             </div>
-
                                                         </div>
-                                                    </div>
-                                                </fieldset>
+                                                    </fieldset>
+                                                </div>
                                             </div>
                                         </div>
                                     </fieldset>
@@ -313,7 +320,7 @@
                                     $("#type").val(value);
                                 });
 
-                            }
+                            }onchange
                         }
 
                     });
@@ -354,6 +361,13 @@
             placeholder: 'Please select employee beneficiary',
         });
     });
+</script>
+
+<script>
+    function showDiv(divId, element)
+    {
+        document.getElementById(divId).style.display = element.value == 'other' ? 'block' : 'none';
+    }
 </script>
 
 

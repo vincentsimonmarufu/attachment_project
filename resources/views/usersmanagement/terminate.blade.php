@@ -137,7 +137,7 @@
         if(paynumber){
             $.ajax({
                 type:"get",
-                url:"http://192.168.1.242:8080/foodhumbers/get-user-department/"+paynumber,
+                url:"/get-user-department/"+paynumber,
                 _token: _token ,
                 success:function(res) {
                     if(res) {

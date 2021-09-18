@@ -516,13 +516,13 @@ class FoodRequestController extends Controller
                     $request->jobcard = $jobcard->card_number;
                     $request->save();
 
-                    if ($request->save())
-                    {
-                        $jobcard->updated_at = now();
-                        $jobcard->extras_previous += 1;
-                        $jobcard->remaining -= 1;
-                        $jobcard->save();
-                    }
+                    // if ($request->save())
+                    // {
+                    //     $jobcard->updated_at = now();
+                    //     $jobcard->extras_previous += 1;
+                    //     $jobcard->remaining -= 1;
+                    //     $jobcard->save();
+                    // }
 
                     return redirect('pending-requests')->with('success','Request has been approved successfully');
 
@@ -574,18 +574,18 @@ class FoodRequestController extends Controller
                                         $request->jobcard = $jobcard->card_number;
                                         $request->save();
 
-                                        $jobcard->updated_at = now();
+                                        // $jobcard->updated_at = now();
 
-                                        if ($job_month == $request->allocation)
-                                        {
-                                            $jobcard->issued += 1;
+                                        // if ($job_month == $request->allocation)
+                                        // {
+                                        //     $jobcard->issued += 1;
 
-                                        } else {
+                                        // } else {
 
-                                            $jobcard->extras_previous += 1;
-                                        }
-                                        $jobcard->remaining -= 1;
-                                        $jobcard->save();
+                                        //     $jobcard->extras_previous += 1;
+                                        // }
+                                        // $jobcard->remaining -= 1;
+                                        // $jobcard->save();
 
                                         return redirect('pending-requests')->with('success','Request has been approved successfully');
 
@@ -608,8 +608,7 @@ class FoodRequestController extends Controller
                                 } else {
 
                                     $request->status = "rejected";
-                                    $request->delete();
-                                    $request->save();
+                                    $request->forceDelete();
 
                                     return back()->with('warning','Requested humber has been approved. Please check on your approved requests.');
                                 }
@@ -656,18 +655,18 @@ class FoodRequestController extends Controller
                                         $request->jobcard = $jobcard->card_number;
                                         $request->save();
 
-                                        $jobcard->updated_at = now();
+                                        // $jobcard->updated_at = now();
 
-                                        if ($job_month == $request->allocation)
-                                        {
-                                            $jobcard->issued += 1;
+                                        // if ($job_month == $request->allocation)
+                                        // {
+                                        //     $jobcard->issued += 1;
 
-                                        } else {
+                                        // } else {
 
-                                            $jobcard->extras_previous += 1;
-                                        }
-                                        $jobcard->remaining -= 1;
-                                        $jobcard->save();
+                                        //     $jobcard->extras_previous += 1;
+                                        // }
+                                        // $jobcard->remaining -= 1;
+                                        // $jobcard->save();
 
                                     } else {
 
@@ -688,8 +687,7 @@ class FoodRequestController extends Controller
                                 } else {
 
                                     $request->status = "rejected";
-                                    $request->delete();
-                                    $request->save();
+                                    $request->forceDelete();
 
                                     return back()->with('warning','Requested humber has been approved. Please check on your approved requests.');
                                 }

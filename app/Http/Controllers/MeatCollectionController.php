@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Allocation;
 use App\Models\Beneficiary;
 use App\Models\FoodRequest;
+use App\Models\Jobcard;
 use App\Models\MeatCollection;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -102,25 +103,55 @@ class MeatCollectionController extends Controller
                     $collect->done_by = Auth::user()->id;
                     $collect->updated_at = now();
                     $collect->status = 1;
-                    $collect->save();
 
-                    if ($collect->save())
+                    $jobcard = Jobcard::where('card_number',$request->input('jobcard'))->first();
+                    $job_month = $frequest->paynumber.$jobcard->card_month;
+
+                    if ($jobcard->remaining > 0)
                     {
-                        $frequest->status = "collected";
-                        $frequest->issued_on = now();
-                        $frequest->save();
+                        $jobcard->updated_at = now();
 
-                        $allocation = Allocation::where('allocation',$request->allocation)->first();
-                        $allocation->meet_allocation -= 1;
-                        $allocation->status = "collected";
-                        $allocation->save();
+                        if ($job_month == $frequest->allocation)
+                        {
+                            $jobcard->issued += 1;
 
-                        $user->mcount -= 1;
-                        $user->save();
+                        } else {
 
+                            $jobcard->extras_previous += 1;
+                        }
+
+                        $jobcard->remaining -= 1;
+                        $jobcard->save();
+
+                        if ($jobcard->save())
+                        {
+                            $collect->save();
+
+                            if ($collect->save())
+                            {
+                                $frequest->status = "collected";
+                                $frequest->issued_on = now();
+                                $frequest->save();
+
+                                $allocation = Allocation::where('allocation',$request->allocation)->first();
+                                $allocation->meet_allocation -= 1;
+                                $allocation->status = "collected";
+                                $allocation->save();
+
+                                $user->mcount -= 1;
+                                $user->save();
+
+                            }
+
+                            return redirect('mcollections/create')->with('success','Collection has been processed successfully');
+                        }
+
+                    } else {
+                        return redirect()->back()->with('error','Selected jobcard has no remaining units');
                     }
 
-                    return redirect('mcollections')->with('success','Collection has been processed successfully');
+                } else {
+                    return redirect()->back()->with('error','Invalid pin supplied.');
                 }
 
             } catch (\Exception $e) {

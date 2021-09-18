@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Beneficiary;
 use App\Models\Department;
-use App\Models\User;
+use App\Models\Jobcard;
 use App\Models\Usertype;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         Department::truncate();
         Usertype::truncate();
         Beneficiary::truncate();
+        Jobcard::truncate();
 
         Model::unguard();
         \App\Models\Department::factory(2)->create();
@@ -36,8 +37,9 @@ class DatabaseSeeder extends Seeder
         $this->call(ConnectRelationshipsSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(HumberSeeder::class);
+         $this->call(JobcardSeeder::class);
 
-        \App\Models\Beneficiary::factory(100)->create();
+        \App\Models\Beneficiary::factory(20)->create();
 
         Model::reguard();
     }

@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\BeneficiaryImport;
 use App\Models\Beneficiary;
+use App\Models\BeneficiaryPassword;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BeneficiariesController extends Controller
 {
@@ -134,8 +138,103 @@ class BeneficiariesController extends Controller
         return view('beneficiaries.assign-beneficiary',compact('users','beneficiaries'));
     }
 
-    public function getIdNumber()
+    public function getIdNumber($beneficiary)
     {
-        
+        $benefit = DB::table('beneficiaries')
+                            ->where([['id', '=', $beneficiary]])
+                            ->pluck('id_number');
+
+        return response()->json($benefit);
+    }
+
+    public function assignBeneficiaryPost(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'paynumber' => 'required',
+            'beneficiary' => 'required',
+            'id_number' => 'required'
+        ]);
+
+        if ($validator->fails())
+        {
+            return redirect()->back()->withErrors($validator)->withInput();
+        } else {
+
+            try {
+                $user = User::findOrFail($request->paynumber);
+
+                $benefici = Beneficiary::findOrFail($request->beneficiary);
+
+                // check if the beneficiary has been assigned to the user
+                $users_a = DB::table('beneficiary_user')
+                            ->where([
+                                ['user_id', '=', $request->paynumber],
+                                ['beneficiary_id', '=', $request->beneficiary]])
+                            ->first();
+
+                if (!$users_a)
+                {
+                    $assign_benef = DB::table('beneficiary_user')->insert([
+                        [
+                            'user_id' => $request->paynumber,
+                            'beneficiary_id' => $request->beneficiary
+                        ],
+                    ]);
+
+                    if ($assign_benef)
+                    {
+                        // create a password for the user and add password to the beneficiary
+
+                        $user_password = BeneficiaryPassword::create([
+                            'id_number' => $benefici->id_number,
+                            'pin' => $user->pin,
+                            'paynumber' => $user->paynumber,
+                        ]);
+                        $user_password->save();
+
+                        return back()->with('success','Beneficiary has been assigned successfully.');
+
+                    } else {
+
+                        return back()->with('error','Your request failed.');
+                    }
+
+                } else {
+
+                    return redirect()->back()->with('error','Beneficiary has already been assigned to user.')->withInput();
+                }
+
+            } catch(\Exception $e) {
+                echo "Error - ".$e;
+            }
+
+        }
+    }
+
+    public function  getImport()
+    {
+        return view('beneficiaries.import');
+    }
+
+    public function postImport(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'beneficiary' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        Excel::import(new BeneficiaryImport,request()->file('beneficiary'));
+
+        return redirect('beneficiaries')->with('Data has been imported successfully');
+    }
+
+    public function allEmployeeAndBeneficiaries()
+    {
+        $beneficiaries = DB::table('beneficiary_user')->get();
+
+        return view('beneficiaries.all-employee-beneficiary',compact('beneficiaries'));
     }
 }

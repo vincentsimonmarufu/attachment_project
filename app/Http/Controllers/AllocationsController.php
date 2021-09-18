@@ -68,7 +68,9 @@ class AllocationsController extends Controller
                     if ($allocations == 0)
                     {
                         $create_alloc = $request->paynumber.$request->input('allocation');
+
                         try {
+
                             $allocation = Allocation::create([
                                 'paynumber' => $request->input('paynumber'),
                                 'allocation' => $create_alloc ,
@@ -78,6 +80,7 @@ class AllocationsController extends Controller
                                 'food_allocation' => 1,
                                 'status' => 'not collected',
                             ]);
+
                             $allocation->save();
 
                             if ($allocation->save())
@@ -93,6 +96,7 @@ class AllocationsController extends Controller
                         {
                             echo 'Error'.$e;
                         }
+                        
                     } else {
 
                         // previous allocation

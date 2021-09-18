@@ -65,6 +65,9 @@ Route::group(['prefix' => 'activity', 'namespace' => 'jeremykenedy\LaravelLogger
 
 
 Route::get('email-approve/{id}/{approver}','App\Http\Controllers\FoodRequestController@emailApprove')->middleware('manageradmin');
+Route::get('delete_unattended_requests','App\Http\Controllers\HumberSettingsController@deleteRequests')->middleware('manageradmin');
+Route::get('delete_pending_requests','App\Http\Controllers\HumberSettingsController@deleteRequestsPending')->middleware('manageradmin');
+Route::delete('user_collection/{id}', 'App\Http\Controllers\FoodCollectionController@deleteUserCollection')->name('benef.destroy')->middleware('admin');
 
 Route::group(['middleware' => ['auth', 'activated','web', 'activity']], function () {
 
@@ -104,8 +107,13 @@ Route::group(['middleware' => ['auth', 'activated','web', 'activity','manageradm
 
     // assign beneficiaries
     Route::get('assign-beneficiary','App\Http\Controllers\BeneficiariesController@assignBeneficiary');
-    Route::get('get-beneficiary-id','App\Http\Controllers\BeneficiariesController@getIdNumber');
+    Route::get('get-beneficiary-id/{beneficiary}','App\Http\Controllers\BeneficiariesController@getIdNumber');
+    Route::post('assign-beneficiary-post', 'App\Http\Controllers\BeneficiariesController@assignBeneficiaryPost');
 
+    Route::get('import-beneficiary','App\Http\Controllers\BeneficiariesController@getImport');
+    Route::post('/beneficiary-import-send','App\Http\Controllers\BeneficiariesController@postImport');
+
+    Route::get('/all-employee-beneficiaries','App\Http\Controllers\BeneficiariesController@allEmployeeAndBeneficiaries');
 });
 
 Route::group(['middleware' => ['auth', 'activated','web', 'activity','manageradmin']], function () {
@@ -159,6 +167,7 @@ Route::group(['middleware' => ['auth', 'activated','web', 'activity']], function
     Route::get('getfrequestallocation/{id}','App\Http\Controllers\FoodCollectionController@getFoodRequestAllocation');
     Route::get('getuserbeneficiaries/{id}','App\Http\Controllers\FoodCollectionController@getUserBeneficiaries');
     Route::get('/get-jobcard-request/{id}','App\Http\Controllers\FoodCollectionController@getRequestJobcard');
+    Route::get('/getmeattype/{id}','App\Http\Controllers\FoodCollectionController@getMeatType');
 
     // meat collection
     Route::resource('mcollections', 'App\Http\Controllers\MeatCollectionController')->middleware('hampercollection');

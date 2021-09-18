@@ -69,7 +69,7 @@
                                     @foreach ($beneficiaries as $beneficiary )
                                         <tr>
                                             <td>{{ $beneficiary->id }}</td>
-                                            <td>{{ $beneficiary->first_name }}</td>
+                                            <td>{{ $beneficiary->full_name }}</td>
                                             <td>{{ $beneficiary->id_number }}</td>
                                             <td>{{ $beneficiary->mobile_number }}</td>
                                             <td style="white-space: nowrap;width:20%;">

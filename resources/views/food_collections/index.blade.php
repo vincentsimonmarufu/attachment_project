@@ -86,7 +86,16 @@
                                                     {{ $collection->collected_by }}
                                                 @endif
                                             </td>
-                                            <td><a href="{{ route('fcollections.show',$collection->id) }}" data-toggle="tooltip" title="View Details" class="d-inline btn btn-sm btn-success"><i class="fa fa-eye"></i></a></td>
+                                            <td>
+                                                <a href="{{ route('fcollections.show',$collection->id) }}" data-toggle="tooltip" title="View Details" class="d-inline btn btn-sm btn-success"><i class="fa fa-eye"></i></a>
+                                                @if (Auth::user()->hasRole('admin') || Auth::user()->hasRole('manager'))
+                                                    <form method="POST" action="{{ route('benef.destroy',$collection->id) }}" role="form" class="d-inline">
+                                                        @csrf
+                                                        @method("DELETE")
+                                                        <button type="submit" class="d-inline btn-sm btn btn-danger" data-toggle="tooltip" title="Delete Collection"><i class="fa fa-trash-o"></i> Delete </button>
+                                                    </form>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @endif

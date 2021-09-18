@@ -126,7 +126,12 @@ class UsersManagementController extends Controller
         $departments = Department::all();
         $usertypes = Usertype::all();
         $roles = Role::all();
-        return view('usersmanagement.edit',compact('departments','usertypes','roles','user'));
+
+        foreach ($user->roles as $user_role)
+        {
+            $currentRole = $user_role;
+        }
+        return view('usersmanagement.edit',compact('departments','usertypes','roles','user','currentRole'));
     }
 
     /**
@@ -147,7 +152,6 @@ class UsersManagementController extends Controller
             'last_name' => 'required',
             'department' => 'required',
             'usertype' => 'required',
-            'role' => 'required',
             'activated' => 'required',
         ]);
 
@@ -206,14 +210,29 @@ class UsersManagementController extends Controller
 
         }
 
-        $userRole = $request->input('role');
-        if($userRole !== null){
-            $user->detachAllRoles();
-            $user->attachRole($userRole);
+        if ($request->input('role'))
+        {
+            $userRole = $request->input('role');
+            if($userRole !== null){
+
+                foreach (Auth::user()->roles as $user_role)
+                {
+                    if ($user_role->id !== 1)
+                    {
+                        return redirect()->back()->with('error','You do not have permission to edit your role');
+
+                    } else {
+                        $user->detachAllRoles();
+                        $user->attachRole($userRole);
+                    }
+                }
+
+
+            }
         }
         $user->save();
 
-        return redirect('users')->with('success','User has been updated successfully');
+        return redirect()->back()->with('success','User has been updated successfully');
     }
 
     /**
@@ -344,14 +363,19 @@ class UsersManagementController extends Controller
 
                 if ($user->save())
                 {
-                    foreach($user->beneficiaries() as $beneficiary)
+
+                    foreach($user->beneficiaries as $beneficiary)
                     {
-                        $beneficiary->pin = $request->input('pin');
-                        $beneficiary->updated_at = now();
-                        $beneficiary->save();
+                        $id_number = $beneficiary->id_number;
+                        $paynumber = $user->paynumber;
+                        $pin = $user->pin;
+
+                        $affected = DB::table('beneficiary_passwords')
+                                    ->where([['id_number','=',$id_number],['paynumber','=',$paynumber]])
+                                    ->update(['pin' => $pin]);
                     }
 
-                    return  redirect('home')->with('success','Password has been updated successfully');
+                    return  redirect()->back()->with('success','Password has been updated successfully');
                 }
 
             } catch (\Exception $e) {

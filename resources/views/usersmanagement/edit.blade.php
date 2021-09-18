@@ -160,25 +160,28 @@
                                         </span>
                                     @enderror
                                 </div>
-                                <div class="form-group row">
-                                    <label for="role" class="col-sm-2 col-form-label"
-                                        >Role : </label
-                                    >
-                                    <div class="col-sm-10">
-                                        <select name="role" id="role" class="form-control @error('role') is-invalid @enderror" required autofocus>
-                                            @if ($roles)
-                                                @foreach($roles as $role)
-                                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                                @endforeach
-                                            @endif
-                                        </select>
+
+                                @if ($user->hasRole('admin'))
+                                    <div class="form-group row">
+                                        <label for="role" class="col-sm-2 col-form-label"
+                                            >Role : </label
+                                        >
+                                        <div class="col-sm-10">
+                                            <select name="role" id="role" class="form-control @error('role') is-invalid @enderror" required autofocus>
+                                                @if ($roles)
+                                                    @foreach($roles as $role)
+                                                        <option value="{{ $role->id }}" {{ $currentRole->id == $role->id ? 'selected="selected"' : '' }}>{{ $role->name }}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                        @error('role')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong> {{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
-                                    @error('role')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong> {{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+                                @endif
                                 <div class="form-group row">
                                     <label for="activated" class="col-sm-2 col-form-label">User Status : </label>
                                     <div class="col-sm-10">

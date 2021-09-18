@@ -105,6 +105,18 @@
                             </a>
                         </li>
 
+                        <li class="">
+                            <a href="{{ url('import-beneficiary') }}" class="waves-effect waves-dark">
+                                <span class="pcoded-mtext">Import Beneficiary</span>
+                            </a>
+                        </li>
+
+                        <li class="">
+                            <a href="{{ url('all-employee-beneficiaries') }}" class="waves-effect waves-dark">
+                                <span class="pcoded-mtext">Employee Beneficiaries</span>
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
 

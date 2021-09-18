@@ -15,12 +15,10 @@ class Beneficiary extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'user_id',
         'first_name',
         'last_name',
         'id_number',
         'mobile_number',
-        'pin'
     ];
 
 
@@ -32,6 +30,11 @@ class Beneficiary extends Model
     public function users()
     {
         return $this->belongsToMany(User::class,'beneficiary_user','beneficiary_id','user_id');
+    }
+
+    public function passwords()
+    {
+        return $this->hasMany(BeneficiaryPassword::class,'id_number','id_number');
     }
 
 }
