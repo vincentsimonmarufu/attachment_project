@@ -138,6 +138,48 @@
                                         </span>
                                     @enderror
                                 </div>
+
+                                <div class="form-group row">
+                                    <label for="	issued" class="col-sm-2 col-form-label"
+                                        >Issued : </label
+                                    >
+                                    <div class="col-sm-10">
+                                        <input type="number" value="{{ $jobcard->issued }}" name="issued" id="issued" class="form-control @error('issued') is-invalid @enderror" required="" />
+                                    </div>
+                                    @error('issued')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong> {{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="remaining" class="col-sm-2 col-form-label"
+                                        >Remaining : </label
+                                    >
+                                    <div class="col-sm-10">
+                                        <input type="number" value="{{ $jobcard->remaining }}" name="remaining" id="remaining" class="form-control @error('remaining') is-invalid @enderror" required="" />
+                                    </div>
+                                    @error('remaining')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong> {{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="extras_previous" class="col-sm-2 col-form-label"
+                                        >Extra Previous : </label
+                                    >
+                                    <div class="col-sm-10">
+                                        <input type="number" value="{{ $jobcard->extras_previous }}" name="extras_previous" id="extras_previous" class="form-control @error('extras_previous') is-invalid @enderror" required="" />
+                                    </div>
+                                    @error('extras_previous')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong> {{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                                 <div class="form-group row justify-content-end">
                                     <button class="btn waves-effect btn-round waves-light btn-sm btn-success mr-3">Update Job Card</button>
                                 </div>

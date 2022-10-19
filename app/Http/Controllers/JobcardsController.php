@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\JobcardImport;
 use App\Models\Jobcard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -18,7 +19,7 @@ class JobcardsController extends Controller
     public function index()
     {
         $jobcards = Jobcard::latest()->get();
-        return view('jobcards.index',compact('jobcards'));
+        return view('jobcards.index', compact('jobcards'));
     }
 
     /**
@@ -39,7 +40,7 @@ class JobcardsController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'card_number' => 'required|unique:jobcards',
             'date_opened' => 'required',
             'card_month' => 'required',
@@ -47,109 +48,49 @@ class JobcardsController extends Controller
             'quantity' => 'required',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
-        }
-        else {
+        } else {
+
             try {
-                if ($request->card_type == "food")
-                {
-                    $food = Jobcard::where('card_type','=','food')->get();
+                $jobcard = new Jobcard();
+                $card_type = $request->input('card_type');
 
-                    if($food->count() == 0)
-                    {
-                        $card = Jobcard::create([
-                            'card_number' => $request->input('card_number'),
-                            'date_opened' => $request->input('date_opened'),
-                            'card_month' => $request->input('card_month'),
-                            'card_type' => $request->input('card_type'),
-                            'quantity' => $request->input('quantity'),
-                            'remaining' => $request->input('quantity'),
-                        ]);
-                        $card->save();
+                $non_empty = Jobcard::where([['card_type', $card_type], ['remaining', '>', 0]])->first();
 
-                        return redirect('jobcards')->with('success','Jobcard has been created successfully');
+                if ($non_empty) {
+                    return redirect()->back()->with('error', 'There is a jobcard with units.');
+                } else {
+                    if ($card_type == 'food') {
+                        $jobcard->card_number = $request->input('card_number');
+                        $jobcard->date_opened = $request->input('date_opened');
+                        $jobcard->card_month = $request->input('card_month');
+                        $jobcard->card_type = $request->input('card_type');
+                        $jobcard->quantity = $request->input('quantity');
+                        $jobcard->remaining = $request->input('quantity');
 
-                    } else {
-                        $i = 0;
-                        foreach ($food as $f)
-                        {
-                            if ($f->remaining > 0)
-                            {
-                                $i++;
-                            }
+                        $jobcard->save();
+
+                        if ($jobcard->save()) {
+                            return redirect()->back()->with('success', 'Jobcard has been created successfully');
                         }
+                    } else {
+                        $jobcard->card_number = $request->input('card_number');
+                        $jobcard->date_opened = $request->input('date_opened');
+                        $jobcard->card_month = $request->input('card_month');
+                        $jobcard->card_type = $request->input('card_type');
+                        $jobcard->quantity = $request->input('quantity');
+                        $jobcard->remaining = $request->input('quantity');
 
-                        if ($i > 0)
-                        {
-                            return back()->with('error','There is a Food jobcard with remaining units');
+                        $jobcard->save();
 
-                        } else {
-                            $card = Jobcard::create([
-                                'card_number' => $request->input('card_number'),
-                                'date_opened' => $request->input('date_opened'),
-                                'card_month' => $request->input('card_month'),
-                                'card_type' => $request->input('card_type'),
-                                'quantity' => $request->input('quantity'),
-                                'remaining' => $request->input('quantity'),
-                            ]);
-                            $card->save();
-
-                            return redirect('jobcards')->with('success','Job card has been added successfully');
+                        if ($jobcard->save()) {
+                            return redirect()->back()->with('success', 'Jobcard has been created successfully');
                         }
                     }
                 }
-
-                if ($request->card_type == "meat")
-                {
-                    $meat = Jobcard::where('card_type','=','meat')->get();
-
-                    if($meat->count() == 0)
-                    {
-                        $card = Jobcard::create([
-                            'card_number' => $request->input('card_number'),
-                            'date_opened' => $request->input('date_opened'),
-                            'card_month' => $request->input('card_month'),
-                            'card_type' => $request->input('card_type'),
-                            'quantity' => $request->input('quantity'),
-                            'remaining' => $request->input('quantity'),
-                        ]);
-                        $card->save();
-
-                        return redirect('jobcards')->with('success','Job Card has been created successfully');
-
-                    } else {
-                        $i = 0;
-                        foreach ($meat as $m)
-                        {
-                            if ($m->remaining > 0)
-                            {
-                                $i++;
-                            }
-                        }
-
-                        if ($i > 0)
-                        {
-                            return back()->with('error','There is a Meat Job Card with remaining units');
-
-                        } else {
-                            $card = Jobcard::create([
-                                'card_number' => $request->input('card_number'),
-                                'date_opened' => $request->input('date_opened'),
-                                'card_month' => $request->input('card_month'),
-                                'card_type' => $request->input('card_type'),
-                                'quantity' => $request->input('quantity'),
-                                'remaining' => $request->input('quantity'),
-                            ]);
-                            $card->save();
-
-                            return redirect('jobcards')->with('success','Job card has been added successfully');
-                        }
-                    }
-                }
-
             } catch (\Exception $e) {
-                echo "Error - ".$e;
+                echo "Error - " . $e;
             }
         }
     }
@@ -162,7 +103,7 @@ class JobcardsController extends Controller
      */
     public function show(Jobcard $jobcard)
     {
-
+        return 'sex';
     }
 
     /**
@@ -173,7 +114,7 @@ class JobcardsController extends Controller
      */
     public function edit(Jobcard $jobcard)
     {
-        return view('jobcards.edit',compact('jobcard'));
+        return view('jobcards.edit', compact('jobcard'));
     }
 
     /**
@@ -185,64 +126,45 @@ class JobcardsController extends Controller
      */
     public function update(Request $request, Jobcard $jobcard)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'card_number' => 'required',
             'date_opened' => 'required',
             'card_month' => 'required',
             'card_type' => 'required',
             'quantity' => 'required',
+            'issued' => 'required',
+            'remaining' => 'required',
+            // 'extras_previous' => 'required',
+
         ]);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
-
         } else {
 
             try {
                 // checking the request type
-                if ($request->card_type == "food")
                 {
-                    return back()->with('warning','Please note that food humber job card cannot be edited. ');
 
-                } else {
-
-                    $total = $jobcard->issued + $jobcard->extras_previous;
-
-                    if ($total > 0)
-                    {
-                        // can only edit qty
-                        $current_qty = $jobcard->quantity;
-                        if ($current_qty > $request->quantity)
-                        {
-                            return back()->with('error','Supplied quantity is less than the existing quantity');
-
-                        } else{
-
-                            $jobcard->quantity = $request->quantity;
-                            $jobcard->save();
-
-                            return redirect('jobcards')->with('success','Job card has been updated successfully');
-                        }
-
-                    } else {
+                    $total = $jobcard->issued + $jobcard->extras_previous; {
                         // can edit evertthing on the card
                         $jobcard->card_number = $request->input('card_number');
                         $jobcard->date_opened = $request->input('date_opened');
                         $jobcard->card_month = $request->input('card_month');
                         $jobcard->card_type = $request->input('card_type');
                         $jobcard->quantity = $request->input('quantity');
+                        $jobcard->issued = $request->input('issued');
+                        $jobcard->remaining = $request->input('remaining');
+                        // $jobcard->extras_previous = $request->input('extras_previous');
                         $jobcard->save();
 
-                        return redirect('jobcards')->with('success','Jobcard has been updated successfully');
+                        return redirect('jobcards')->with('success', 'Jobcard has been updated successfully');
                     }
                 }
-
             } catch (\Exception $e) {
-                echo "Error - ".$e;
+                echo "Error - " . $e;
             }
         }
-
     }
 
     /**
@@ -256,16 +178,16 @@ class JobcardsController extends Controller
         $jobcard = Jobcard::findOrFail($id);
 
         // check if the jobcard has been issued or not
-        $total = $jobcard->issued + $jobcard->extras_previous;
+        // $total = $jobcard->issued + $jobcard->extras_previous;
+        $total = $jobcard->issued;
 
-        if ($total == 0)
-        {
+        if ($total == 0) {
             $jobcard->delete();
 
-            return redirect('jobcards')->with('success','Jobcard has been deleted successfully');
+            return redirect('jobcards')->with('success', 'Jobcard has been deleted successfully');
         } else {
 
-            return back()->with('error','Job Card Cannot be deleted.');
+            return back()->with('error', 'Job Card Cannot be deleted.');
         }
     }
 
@@ -283,7 +205,7 @@ class JobcardsController extends Controller
 
     public function uploadJobcards(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'jobcard' => 'required',
 
         ]);
@@ -292,8 +214,22 @@ class JobcardsController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        Excel::import(new JobcardImport,request()->file('jobcard'));
+        Excel::import(new JobcardImport, request()->file('jobcard'));
 
         return redirect('jobcards')->with('Data has been imported successfully');
+    }
+
+    public function getAvailableJobCard()
+    {
+        $card_number = DB::select('Select card_number from jobcards where remaining > 0 and card_type = "food"');
+
+        return $card_number;
+    }
+
+    public function getAvailableMeatJobCard()
+    {
+        $card_number = DB::select('Select card_number from jobcards where remaining > 0 and card_type = "meat"');
+        // dd($card_number);
+        return $card_number;
     }
 }
