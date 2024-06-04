@@ -1,7 +1,7 @@
 <nav class="navbar header-navbar pcoded-header">
     <div class="navbar-wrapper">
         <div class="navbar-logo">
-            <a href="index.html">
+            <a href="{{ url('/home') }}">
                 <img class="img-fluid" src="{{ asset('dash_resource\png\top_logo_small.png') }}"
                     alt="{{ config('app.name', 'Laravel') }}" />
             </a>
@@ -14,19 +14,6 @@
         </div>
         <div class="navbar-container container-fluid">
             <ul class="nav-left">
-                <li class="header-search">
-                    <div class="main-search morphsearch-search">
-                        <div class="input-group">
-                            <span class="input-group-prepend search-close">
-                                <i class="feather icon-x input-group-text"></i>
-                            </span>
-                            <input type="text" class="form-control" placeholder="Enter Keyword" />
-                            <span class="input-group-append search-btn">
-                                <i class="feather icon-search input-group-text"></i>
-                            </span>
-                        </div>
-                    </div>
-                </li>
                 <li>
                     <a href="#!"
                         onclick="if (!window.__cfRLUnblockHandlers) return false; javascript:toggleFullScreen()"
@@ -40,12 +27,103 @@
 
                 @else
 
+                @php
+                    $count1 = \App\Models\FoodRequest::where('status','not approved')->count();
+                    $count2 = \App\Models\MeatRequest::where('status','not approved')->count();
+                    $notifications = \App\Models\FoodRequest::where('status','=','not approved')->limit(5)->latest()->get();
+                    $meats = \App\Models\MeatRequest::where('status','=','not approved')->limit(5)->latest()->get();
+                @endphp
+
+                @if (Auth::user()->hasRole('admin'))
+                    <li class="header-notification">
+                        <div class="dropdown-primary dropdown">
+                        <div class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="feather icon-bell"></i>
+                            <span class="badge bg-c-red">{{ $count1 }}</span>
+                        </div>
+                        <ul
+                            class="show-notification notification-view dropdown-menu"
+                            data-dropdown-in="fadeIn"
+                            data-dropdown-out="fadeOut"
+                        >
+                            <li>
+                            <h6>Food request notifications</h6>
+                            <label class="label label-primary"><a style="color: white;" href="{{ url('/pending-requests')}}">View All</a></label>
+                            </li>
+
+                            @if ($count1 > 0)
+                                @foreach ($notifications as $item)
+                                    <li>
+                                        <div class="media">
+                                            <span class="pcoded-micon pr-3 pt-3"><i class="fa fa-sign-out"></i></span>
+                                            <div class="media-body">
+                                                <h5 class="notification-user">{{ $item->user->full_name }}</h5>
+                                                <p class="notification-msg">Submitted a request pending approval. <a style="color:aliceblue;" class="btn btn-round btn-primary btn-sm " href="{{ route('notify.food',$item->id)}}">Show</a></p>
+                                                <span class="notification-time">Submitted at {{ $item->created_at->format('H:i:s') }}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            @else
+                                <li>
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <p class="notification-msg"> No new notifications</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                        </ul>
+                        </div>
+                    </li>
+
+                    <li class="header-notification">
+                        <div class="dropdown-primary dropdown">
+                        <div class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="feather icon-message-square"></i>
+                            <span class="badge badge bg-c-green">{{ $count2 }}</span>
+                        </div>
+                        <ul
+                            class="show-notification notification-view dropdown-menu"
+                            data-dropdown-in="fadeIn"
+                            data-dropdown-out="fadeOut"
+                        >
+                            <li>
+                            <h6>Meat request notifications</h6>
+                            <label class="label label-primary"><a style="color: white;" href="{{ url('/pending-meat-requests')}}">View All</a></label>
+                            </li>
+
+                            @if ($count2 > 0)
+                                @foreach ($meats as $item)
+                                    <li>
+                                        <div class="media">
+                                            <span class="pcoded-micon pr-3 pt-3"><i class="fa fa-sign-out"></i></span>
+                                            <div class="media-body">
+                                                <h5 class="notification-user">{{ $item->user->full_name }}</h5>
+                                                <p class="notification-msg">Submitted a request pending approval. <a style="color:aliceblue;" class="btn btn-round btn-primary btn-sm " href="{{ route('notify.meat',$item->id)}}">Show</a></p>
+                                                <span class="notification-time">Submitted at {{ $item->created_at->format('H:i:s') }}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            @else
+                                <li>
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <p class="notification-msg"> No new notifications</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                        </ul>
+                        </div>
+                    </li>
+                @endif
+
                 <li class="user-profile header-notification">
                     <div class="dropdown-primary dropdown">
                         <div class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="{{ asset('images/user_icon_150670.png') }}" class="img-radius"
-                                alt="User-Profile-Image" />
-                            <span>{{ Auth::user()->name }}</span>
+                            <span>{{ Auth::user()->full_name }}</span>
                             <i class="feather icon-chevron-down"></i>
                         </div>
                         <ul class="show-notification profile-notification dropdown-menu" data-dropdown-in="fadeIn"

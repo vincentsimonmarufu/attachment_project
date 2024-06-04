@@ -13,7 +13,7 @@ class DeleteApprovedRequests extends Command
      *
      * @var string
      */
-    protected $signature = 'delete:approved';
+    protected $signature = 'request:delete';
 
     /**
      * The console command description.
@@ -39,43 +39,14 @@ class DeleteApprovedRequests extends Command
      */
     public function handle()
     {
-        $requests = FoodRequest::where('status','=','approved')->get();
+        $foodRequests = FoodRequest::whereDate('created_at',date("Y-m-d", strtotime( '-1 days' ) ))->where('status','approved')->get();
 
-        $deleted = array();
+        // foreach ($foodRequests as $foodRequest) {
+        //     $foodRequest->delete();
+        // }
 
-        foreach($requests as $request)
-        {
-            try {
+        // $this->info('Deleted all approved requests');
 
-                $paynumber = $request->paynumber;
-                $month = $request->job->card_month;
-                $jobcard_month = $paynumber.$month;
-
-                $request->delete();
-
-                if($request->delete())
-                {
-                    if($request->allocation == $jobcard_month)
-                    {
-                        $request->job->issued -= 1;
-                        $request->job->remaining += 1;
-                        $request->job->save();
-
-                    } else {
-
-                        $request->job->extras_previous -= 1;
-                        $request->job->remaining += 1;
-                        $request->job->save();
-                    }
-
-                    array_push($deleted,$request->request);
-                }
-
-            } catch (\Exception $e) {
-                echo "Error - ".$e;
-            }
-        }
-
-        Log::info($deleted);
+        Log::info($foodRequests);
     }
 }

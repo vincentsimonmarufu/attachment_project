@@ -16,7 +16,6 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\MonthlyAllocation::class,
         Commands\DeleteApprovedRequests::class,
-        Commands\DeleteUnattendedRequests::class,
     ];
 
     /**
@@ -27,9 +26,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('allocation:monthly')->monthly()->runInBackground();
-        $schedule->command('unattended:delete')->daily()->runInBackground();
-        $schedule->command('delete:approved')->daily()->runInBackground();
+        $schedule->command('allocate:users')->monthly()->runInBackground();
+        $schedule->command('request:delete')->daily()->runInBackground();
     }
 
     /**

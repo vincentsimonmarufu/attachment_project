@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoleAndPermission, SoftDeletes;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -26,18 +26,9 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
-        'paynumber',
-        'first_name',
-        'last_name',
-        'mobile',
-        'department_id',
-        'usertype_id',
         'email',
         'password',
         'activated',
-        'pin',
-        'fcount',
-        'mcount',
     ];
 
     /**
@@ -58,45 +49,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function department()
-    {
-        return $this->belongsTo(Department::class,'department_id','id');
-    }
-
-    public function usertype()
-    {
-        return $this->belongsTo(Usertype::class,'usertype_id','id');
-    }
-
-    public function allocations()
-    {
-        return $this->hasMany(Allocation::class,'paynumber','paynumber');
-    }
-
-    public function getFullNameAttribute()
-    {
-        return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
-    }
-
-    public function frequests()
-    {
-        return $this->hasMany(FoodRequest::class,'paynumber','paynumber');
-    }
-
-    public function food_collections()
-    {
-        return $this->hasMany(FoodCollection::class,'paynumber','paynumber');
-    }
-
-    public function meat_collections()
-    {
-        return $this->hasMany(MeatCollection::class,'paynumber','paynumber');
-    }
-
-    public function beneficiaries()
-    {
-        return $this->belongsToMany(Beneficiary::class,'beneficiary_user','user_id','beneficiary_id');
-    }
-
 }

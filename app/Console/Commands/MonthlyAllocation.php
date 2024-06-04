@@ -14,7 +14,7 @@ class MonthlyAllocation extends Command
      *
      * @var string
      */
-    protected $signature = 'allocation:monthly';
+    protected $signature = 'allocate:users';
 
     /**
      * The console command description.
